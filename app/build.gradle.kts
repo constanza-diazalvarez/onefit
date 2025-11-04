@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -89,4 +90,10 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.2.2")
 
+    // --- DEPENDENCIAS DE ROOM ---
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx) // Para Coroutines
+
+    //Esta es la línea para KSP
+    ksp(libs.room.compiler)
 }
