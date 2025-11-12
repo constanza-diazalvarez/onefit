@@ -32,12 +32,6 @@ interface RutinaDao {
     @Delete
     suspend fun deleteEjercicioRutina(ejercicio: EjercicioRutina)
 
-    // --- Función de Composición (ACTUALIZADA) ---
-
-    /**
-     * Trae la Rutina Y su lista de ejercicios, todo de una vez.
-     * Usamos @Transaction para asegurar que sea una operación atómica.
-     */
     @Transaction
     @Query("SELECT * FROM rutina WHERE id = :idRutina")
     fun getRutinaDetallada(idRutina: Int): Flow<RelacionRutinaConEjercicios>
