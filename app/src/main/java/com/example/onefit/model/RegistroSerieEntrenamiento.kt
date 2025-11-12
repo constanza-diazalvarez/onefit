@@ -22,7 +22,7 @@ data class RegistroSerieEntrenamiento(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
-    val registroSerieEntrenamientoId: Int,
+    var registroSerieEntrenamientoId: Int,
 
     @ColumnInfo(name = "nombre_ejercicio")
     val nombreEjercicio: String,

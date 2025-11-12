@@ -10,7 +10,11 @@ material = "1.13.0"
 activity = "1.11.0"
 constraintlayout = "2.2.1"
 room = "2.6.1"
-ksp = "1.9.22-1.0.17"
+ksp = "2.0.21-1.0.20"
+hilt = "2.51.1"
+hiltNavigationCompose = "1.2.0"
+lifecycle = "2.8.3"
+composeRuntimeLivedata = "1.6.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -24,10 +28,16 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" } # <-- AÑADE ESTA
+lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }         # <-- AÑADE ESTA
+compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "composeRuntimeLivedata" } # <-- AÑADE ESTA
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = {id = "org.jetbrains.kotlin.plugin.compose", version.ref="kotlin"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 

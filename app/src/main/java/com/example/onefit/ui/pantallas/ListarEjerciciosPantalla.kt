@@ -1,187 +1,120 @@
 package com.example.onefit.ui.pantallas
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.onefit.api.RetrofitHelper
-import com.example.onefit.model.EjercicioDto
-import kotlinx.coroutines.launch
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import coil.compose.AsyncImage
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.onefit.model.Rutina
+import com.example.onefit.viewmodel.ListarRutinasViewModel
 
+/**
+ * Pantalla principal que muestra la lista de rutinas.
+ * Es una función @Composable.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListaEjerciciosPantalla() {
-    // Declaración y manejo del estado
-    var listaEjercicios by remember { mutableStateOf<List<EjercicioDto>>(emptyList()) }
-    var cargando by remember { mutableStateOf(true) }
-    var error by remember { mutableStateOf<String?>(null) }
-    val scope = rememberCoroutineScope()
+fun ListarRutinasPantalla(
+    // Pedimos el ViewModel. Hilt se lo inyectará automáticamente
+    viewModel: ListarRutinasViewModel = hiltViewModel()
+) {
+    // Observamos la variable 'todasLasRutinas' del ViewModel.
+    // 'observeAsState' convierte el LiveData en un "Estado" de Compose.
+    val rutinasList by viewModel.todasLasRutinas.observeAsState(initial = emptyList())
 
-    // ----------------------------------------------------------------------
-    // LÓGICA DE CARGA DE DATOS (Se ejecuta una sola vez al inicio)
-    // ----------------------------------------------------------------------
-    LaunchedEffect(Unit) {
-        scope.launch {
-            try {
-                val ejerciciosBase = RetrofitHelper.api.obtenerEjercicios()
-
-                listaEjercicios = ejerciciosBase.map { base ->
-                    val imagenResponse = try {
-                        RetrofitHelper.api.obtenerImagenEjercicio(base.id ?: "", "default")
-                    } catch (e: Exception) {
-                        null
-                    }
-
-                    base.copy(imageUrl = imagenResponse?.imageUrl)
-                }
-            } catch (e: Exception) {
-                error = "Fallo al cargar los ejercicios: ${e.localizedMessage ?: "Error desconocido"}"
-            } finally {
-                cargando = false
-            }
-        }
-    }
-
-
-    // ----------------------------------------------------------------------
-    // ESTRUCTURA DE PANTALLA (Usando Scaffold para la AppBar)
-    // ----------------------------------------------------------------------
+    // Scaffold es la estructura básica de Material Design
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Guía de Ejercicios", color = MaterialTheme.colorScheme.onPrimary) },
-                // El color de la barra superior viene de `primary` en tu OneFitTheme
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
+            TopAppBar(
+                title = { Text("Mis Rutinas") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         },
-        // El color del fondo de la pantalla viene de `background` en tu OneFitTheme
-        containerColor = MaterialTheme.colorScheme.background
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    // TODO: Aquí irá la navegación para
+                    // ir a la pantalla de "Crear Rutina" (OF-1)
+                }
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Crear Rutina")
+            }
+        }
     ) { paddingValues ->
 
-        // ----------------------------------------------------------------------
-        // Manejo de Estados de la UI (Carga, Error, Éxito)
-        // ----------------------------------------------------------------------
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            when {
-                cargando -> {
-                    CircularProgressIndicator(Modifier.align(Alignment.Center))
-                }
-                error != null -> {
-                    EstadoError(error = error, onRetry = {
-                        cargando = true
-                        error = null
-                        scope.launch { /* Lógica de reintento de carga */ }
-                    }, modifier = Modifier.align(Alignment.Center))
-                }
-                listaEjercicios.isEmpty() -> {
-                    Text("No se encontraron ejercicios.", Modifier.align(Alignment.Center), color = MaterialTheme.colorScheme.onBackground)
-                }
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(listaEjercicios, key = { it.id ?: it.exerciseId ?: "" }) { ejercicio ->
-                            EjercicioCard(ejercicio = ejercicio)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-// ----------------------------------------------------------------------
-// Componente Reutilizable: Tarjeta de Ejercicio
-// ----------------------------------------------------------------------
-@Composable
-fun EjercicioCard(ejercicio: EjercicioDto, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .shadow(2.dp, shape = MaterialTheme.shapes.medium),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // ✅ IMAGEN DEL EJERCICIO
-            AsyncImage(
-                model = ejercicio.imageUrl,
-                contentDescription = ejercicio.name,
+        // Comprobamos si la lista está vacía
+        if (rutinasList.isEmpty()) {
+            // Mostramos un mensaje centrado
+            Box(
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(Modifier.width(12.dp))
-
-            // ✅ INFORMACIÓN DEL EJERCICIO
-            Column {
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
-                    text = ejercicio.name ?: "Sin nombre",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    text = "Aún no tienes rutinas. ¡Presiona el botón '+' para crear la primera!",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(horizontal = 32.dp)
                 )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = "${ejercicio.bodyPart} • ${ejercicio.target}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            }
+        } else {
+            // Mostramos la lista de rutinas
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(top = 16.dp)
+            ) {
+                items(rutinasList) { rutina ->
+                    RutinaItem(rutina = rutina)
+                    Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                }
             }
         }
     }
 }
 
-// ----------------------------------------------------------------------
-// Componente Reutilizable: Estado de Error
-// ----------------------------------------------------------------------
-
+/**
+ * Un Composable que dibuja una sola fila (un item) de la lista.
+ */
 @Composable
-fun EstadoError(error: String?, onRetry: () -> Unit, modifier: Modifier = Modifier) {
+fun RutinaItem(rutina: Rutina) {
     Column(
-        modifier = modifier.padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
         Text(
-            text = "Error al cargar",
+            text = rutina.nombre,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.error,
-            modifier = Modifier.padding(bottom = 8.dp)
+            fontWeight = FontWeight.Bold
         )
-        Text(
-            text = error ?: "Detalle del error desconocido.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        Button(onClick = onRetry) {
-            Text("Reintentar")
+        if (rutina.descripcion?.isNotEmpty() == true) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = rutina.descripcion,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
