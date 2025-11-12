@@ -9,7 +9,7 @@ data class RelacionRegistroEntrenamientoConSerie(
 
     @Relation(
         parentColumn = "id",
-        entityColumn = "registroEntrenamientoId"
+        entityColumn = "registroSerieEntrenamientoId"
     )
     val series: List<RegistroSerieEntrenamiento>
 )

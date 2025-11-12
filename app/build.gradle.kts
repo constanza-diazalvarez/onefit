@@ -2,8 +2,22 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    id("com.google.devtools.ksp")
 }
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.google.devtools.ksp:symbol-processing-gradle-plugin:2.0.21-1.0.27")
+    }
+}
+
+apply(plugin = "com.google.devtools.ksp")
+
 
 android {
     namespace = "com.example.onefit"
@@ -96,4 +110,7 @@ dependencies {
 
     //Esta es la línea para KSP
     ksp(libs.room.compiler)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 }
