@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RutinaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRutina(rutina: Rutina)
+    suspend fun insertRutina(rutina: Rutina): Long
 
     @Update
     suspend fun updateRutina(rutina: Rutina)

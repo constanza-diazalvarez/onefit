@@ -1,16 +1,18 @@
 package com.example.onefit.model
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class EntrenamientoRepository @Inject constructor(
+class RutinasRepository @Inject constructor(
     private val rutinaDao: RutinaDao,
     private val registroEntrenamientoDao: RegistroEntrenamientoDao
 ) {
 
     fun getAllRutinas(): Flow<List<Rutina>> {
+        Log.d("REPO_DEBUG", "getAllRutinas() llamado")
         return rutinaDao.getAllRutinas()
     }
 
@@ -18,8 +20,9 @@ class EntrenamientoRepository @Inject constructor(
         return rutinaDao.getRutinaDetallada(idRutina)
     }
 
-    suspend fun insertRutina(rutina: Rutina) {
-        rutinaDao.insertRutina(rutina)
+    suspend fun insertRutina(rutina: Rutina): Long {
+        Log.d("REPO_DEBUG", "insertando rutina: ${rutina.nombre}")
+        return rutinaDao.insertRutina(rutina)
     }
 
     suspend fun insertEjercicioRutina(ejercicio: EjercicioRutina) {
@@ -27,8 +30,7 @@ class EntrenamientoRepository @Inject constructor(
     }
 
     fun getAllRegistros(): Flow<List<RegistroEntrenamiento>> {
-        // Usamos el nombre de TU método (no el mío)
-        return registroEntrenamientoDao.getHistorialEntrenamientos() // <-- CORREGIDO
+        return registroEntrenamientoDao.getHistorialEntrenamientos()
     }
 
     fun getRegistroDetallado(idRegistro: Int): Flow<RelacionRegistroEntrenamientoConSerie> {
@@ -38,7 +40,6 @@ class EntrenamientoRepository @Inject constructor(
     suspend fun insertRegistroCompleto(registro: RegistroEntrenamiento, series: List<RegistroSerieEntrenamiento>) {
         val idRegistro = registroEntrenamientoDao.insertRegistroEntrenamiento(registro)
 
-        // Ahora, asignamos ese ID a cada una of las series
         series.forEach { serie ->
             serie.registroSerieEntrenamientoId = idRegistro.toInt()
         }

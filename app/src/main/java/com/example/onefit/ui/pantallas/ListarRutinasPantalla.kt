@@ -1,5 +1,6 @@
 package com.example.onefit.ui.pantallas
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,11 +18,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.onefit.model.Rutina
 import com.example.onefit.viewmodel.ListarRutinasViewModel
+import androidx.navigation.NavController
 
 /**
  * Pantalla principal que muestra la lista de rutinas.
@@ -30,7 +33,7 @@ import com.example.onefit.viewmodel.ListarRutinasViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListarRutinasPantalla(
-    // Pedimos el ViewModel. Hilt se lo inyectará automáticamente
+    navController: NavController,
     viewModel: ListarRutinasViewModel = hiltViewModel()
 ) {
     // Observamos la variable 'todasLasRutinas' del ViewModel.
@@ -39,6 +42,7 @@ fun ListarRutinasPantalla(
 
     // Scaffold es la estructura básica de Material Design
     Scaffold(
+        containerColor = Color.White,
         topBar = {
             TopAppBar(
                 title = { Text("Mis Rutinas") },
@@ -72,6 +76,7 @@ fun ListarRutinasPantalla(
             ) {
                 Text(
                     text = "Aún no tienes rutinas. ¡Presiona el botón '+' para crear la primera!",
+                    color = Color.Black,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(horizontal = 32.dp)
                 )

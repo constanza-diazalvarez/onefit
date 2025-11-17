@@ -33,7 +33,7 @@ abstract class AppDatabase : RoomDatabase(){
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "onefit_database" // Nombre del archivo de la BD en el dispositivo
+                    "onefit_database" //nombre del archivo de la BD en el dispositivo
                 )
                     .build()
 

@@ -6,17 +6,6 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("com.google.devtools.ksp:symbol-processing-gradle-plugin:2.0.21-1.0.27")
-    }
-}
-
-apply(plugin = "com.google.devtools.ksp")
 
 android {
     namespace = "com.example.onefit"

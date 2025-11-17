@@ -19,17 +19,15 @@ fun AgregarRutinaPantalla() {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()           // ocupa toda la pantalla
-            .padding(16.dp),         // deja espacio alrededor
-        verticalArrangement = Arrangement.spacedBy(12.dp) // separa los elementos
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Título
         Text(
             text = "Registrar nueva rutina",
             style = MaterialTheme.typography.titleLarge
         )
 
-        // Campo: Ejercicio (texto libre)
         OutlinedTextField(
             value = ejercicio,
             onValueChange = { ejercicio = it },
@@ -42,7 +40,6 @@ fun AgregarRutinaPantalla() {
             )
         )
 
-        // Campo: Series (solo números)
         OutlinedTextField(
             value = series,
             onValueChange = { series = it.filter { c -> c.isDigit() } }, // deja solo números
@@ -55,7 +52,6 @@ fun AgregarRutinaPantalla() {
             )
         )
 
-        // Campo: Repeticiones por serie
         OutlinedTextField(
             value = repeticiones,
             onValueChange = { repeticiones = it.filter { c -> c.isDigit() } },
@@ -68,11 +64,10 @@ fun AgregarRutinaPantalla() {
             )
         )
 
-        // Campo: Peso (kg)
+
         OutlinedTextField(
             value = peso,
             onValueChange = { input ->
-                // Permitir números y punto decimal
                 val filtrado = input.filter { it.isDigit() || it == '.' }
                 val conUnSoloPunto = if (filtrado.count { it == '.' } > 1) {
                     filtrado.dropLast(filtrado.count { it == '.' } - 1)
@@ -88,7 +83,6 @@ fun AgregarRutinaPantalla() {
             )
         )
 
-        // Botón para guardar
         Button(
             onClick = {
                 println("Rutina: $ejercicio, $series, $repeticiones, $peso")
