@@ -30,14 +30,11 @@ fun AgregarEjerciciosPantalla(
     navController: NavController,
     viewModel: AgregarEjerciciosViewModel = hiltViewModel()
 ) {
-    // Observamos el estado principal (la LISTA de formularios)
     val listaFormularios by viewModel.listaFormularios.collectAsState()
     val navegarALista by viewModel.navegarALista.collectAsState()
 
-    // Efecto para navegar a la lista principal cuando se guarda
     LaunchedEffect(navegarALista) {
         if (navegarALista) {
-            // Volvemos hasta la lista de rutinas, limpiando el historial
             navController.navigate("lista_rutinas") {
                 popUpTo("lista_rutinas") { inclusive = true }
             }
@@ -47,7 +44,7 @@ fun AgregarEjerciciosPantalla(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Agregar Ejercicios (Paso 2)") },
+                title = { Text("Agregar Ejercicios") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, "Volver")
@@ -62,7 +59,6 @@ fun AgregarEjerciciosPantalla(
         }
     ) { paddingValues ->
 
-        // Usamos LazyColumn para que la lista sea "scrollable"
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -71,7 +67,6 @@ fun AgregarEjerciciosPantalla(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            // --- 1. RENDERIZAMOS LA LISTA DE FORMULARIOS ---
             items(listaFormularios, key = { it.idLocal }) { formulario ->
                 FormularioEjercicioItem(
                     estado = formulario,
@@ -80,15 +75,12 @@ fun AgregarEjerciciosPantalla(
                     onRepeticionesChange = { viewModel.onRepeticionesChange(formulario.idLocal, it) },
                     onPesoChange = { viewModel.onPesoChange(formulario.idLocal, it) },
                     onEliminar = { viewModel.eliminarEjercicio(formulario.idLocal) },
-                    // Solo mostramos el botón de eliminar si hay más de uno
                     mostrarBotonEliminar = listaFormularios.size > 1
                 )
             }
 
-            // --- 2. BOTONES DE ACCIÓN ---
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                // Botón para agregar otro formulario a la lista
                 OutlinedButton(
                     onClick = { viewModel.agregarNuevoEjercicio() },
                     modifier = Modifier.fillMaxWidth()
@@ -98,12 +90,11 @@ fun AgregarEjerciciosPantalla(
                     Text("Agregar otro ejercicio")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                // Botón final para guardar todo
                 Button(
                     onClick = { viewModel.onGuardarRutinaClick() },
                     modifier = Modifier.fillMaxWidth().height(50.dp)
                 ) {
-                    Text("GUARDAR RUTINA")
+                    Text("Guardar Rutina")
                 }
             }
         }
@@ -112,7 +103,7 @@ fun AgregarEjerciciosPantalla(
 
 
 /**
- * Un Composable reutilizable que representa UN SOLO formulario
+ * Composable reutilizable que representa UN SOLO formulario
  * de ejercicio en la lista dinámica.
  */
 @Composable
@@ -133,8 +124,6 @@ fun FormularioEjercicioItem(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
-            // --- Fila 1: Nombre y Botón Eliminar ---
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -157,12 +146,10 @@ fun FormularioEjercicioItem(
                 Text(estado.errorNombre, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
             }
 
-            // --- Fila 2: Series, Reps, Peso ---
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // --- Series ---
                 OutlinedTextField(
                     value = estado.series,
                     onValueChange = onSeriesChange,
@@ -171,7 +158,6 @@ fun FormularioEjercicioItem(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.weight(1f)
                 )
-                // --- Repeticiones ---
                 OutlinedTextField(
                     value = estado.repeticiones,
                     onValueChange = onRepeticionesChange,
@@ -180,7 +166,6 @@ fun FormularioEjercicioItem(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.weight(1f)
                 )
-                // --- Peso (Opcional) ---
                 OutlinedTextField(
                     value = estado.peso,
                     onValueChange = onPesoChange,

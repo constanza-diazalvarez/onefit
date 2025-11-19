@@ -1,32 +1,23 @@
 package com.example.onefit.ui.pantallas
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.onefit.model.Rutina
 import com.example.onefit.viewmodel.ListarRutinasViewModel
-import androidx.navigation.NavController
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,25 +38,30 @@ fun ListarRutinasPantalla(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         },
+        // --- ¡AQUÍ ESTÁ EL ARREGLO! ---
+        // Usamos ExtendedFloatingActionButton para tener TEXTO + ICONO
         floatingActionButton = {
-            FloatingActionButton(
+            ExtendedFloatingActionButton(
                 onClick = {
-                    // TODO: Aquí irá la navegación para
-                    // ir a la pantalla de "Crear Rutina" (OF-1)
-                }
+                    // Navega a la pantalla de creación
+                    navController.navigate("crear_rutina")
+                },
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Crear Rutina")
+                Icon(Icons.Default.Add, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("CREAR NUEVA RUTINA") // <-- ¡TEXTO VISIBLE!
             }
         }
     ) { paddingValues ->
 
-        // Comprobamos si la lista está vacía
         if (rutinasList.isEmpty()) {
-            // Mostramos un mensaje centrado
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -74,51 +70,73 @@ fun ListarRutinasPantalla(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Aún no tienes rutinas. ¡Presiona el botón '+' para crear la primera!",
-                    color = Color.Black,
+                    text = "Aún no tienes rutinas. ¡Crea una ahora!",
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(horizontal = 32.dp)
                 )
             }
         } else {
-            // Mostramos la lista de rutinas
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(top = 16.dp)
+                    .padding(top = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(rutinasList) { rutina ->
-                    RutinaItem(rutina = rutina)
-                    Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                    // Usamos la versión CARD para que el click funcione bien
+                    RutinaItemCard(
+                        rutina = rutina,
+                        onClick = {
+                            navController.navigate("detalle_rutina/${rutina.id}")
+                        }
+                    )
                 }
+                // Espacio extra al final
+                item { Spacer(modifier = Modifier.height(80.dp)) }
             }
         }
     }
 }
 
 /**
- * Un Composable que dibuja una sola fila (un item) de la lista.
+ * Componente de Tarjeta Clickeable
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RutinaItem(rutina: Rutina) {
-    Column(
+fun RutinaItemCard(
+    rutina: Rutina,
+    onClick: () -> Unit
+) {
+    Card(
+        onClick = onClick, // El onClick nativo de Material3 funciona perfecto
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-    ) {
-        Text(
-            text = rutina.nombre,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+            .padding(horizontal = 16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
         )
-        if (rutina.descripcion?.isNotEmpty() == true) {
-            Spacer(modifier = Modifier.height(4.dp))
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
             Text(
-                text = rutina.descripcion,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = rutina.nombre,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
             )
+            if (rutina.descripcion?.isNotEmpty() == true) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = rutina.descripcion,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }

@@ -20,9 +20,9 @@ import javax.inject.Inject
 data class FormularioEjercicioEstado(
     val idLocal: UUID = UUID.randomUUID(),
     val nombre: String = "",
-    val series: String = "4", // Valor por defecto
-    val repeticiones: String = "10", // Valor por defecto
-    val peso: String = "", // Opcional, por eso String
+    val series: String = "4",
+    val repeticiones: String = "10",
+    val peso: String = "", //opcional, por eso String
     val errorNombre: String? = null,
     val errorSeries: String? = null,
     val errorReps: String? = null
@@ -34,44 +34,30 @@ class AgregarEjerciciosViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    // El ID de la rutina (Padre) a la que pertenecen estos ejercicios
     private val rutinaId: Int = checkNotNull(savedStateHandle.get("rutinaId"))
 
-    // --- ¡ESTADO PRINCIPAL! ---
-    // Ya no es un solo ejercicio, es una LISTA de formularios
     private val _listaFormularios = MutableStateFlow(listOf<FormularioEjercicioEstado>())
     val listaFormularios = _listaFormularios.asStateFlow()
 
-    // Estado para la navegación
     private val _navegarALista = MutableStateFlow(false)
     val navegarALista = _navegarALista.asStateFlow()
 
     init {
-        // Empezamos con UN formulario en la lista por defecto
         agregarNuevoEjercicio()
     }
 
-    /**
-     * Añade un nuevo formulario vacío (con valores por defecto)
-     * a nuestra lista de estados.
-     */
     fun agregarNuevoEjercicio() {
         _listaFormularios.update { listaActual ->
             listaActual + FormularioEjercicioEstado()
         }
     }
 
-    /**
-     * Elimina un formulario de la lista (usando su ID local)
-     */
     fun eliminarEjercicio(idLocal: UUID) {
         _listaFormularios.update { listaActual ->
             listaActual.filterNot { it.idLocal == idLocal }
         }
     }
 
-    // --- Funciones para actualizar el estado de un item específico ---
-    // (Esto es más complejo porque debemos actualizar un item DENTRO de la lista)
 
     fun onNombreChange(idLocal: UUID, valor: String) {
         actualizarFormulario(idLocal) { it.copy(nombre = valor, errorNombre = null) }
@@ -104,10 +90,6 @@ class AgregarEjerciciosViewModel @Inject constructor(
         }
     }
 
-    /**
-     * ¡Lógica de Guardado!
-     * Valida TODOS los formularios y los guarda en la BD.
-     */
     fun onGuardarRutinaClick() {
         val formularios = _listaFormularios.value
         var esValidoGlobal = true
@@ -129,26 +111,23 @@ class AgregarEjerciciosViewModel @Inject constructor(
             )
         }
 
-        // Actualizamos la UI con los errores (si hay)
         _listaFormularios.value = formulariosValidados
 
-        if (!esValidoGlobal) return // Si algo falló, no continuamos
+        if (!esValidoGlobal) return
 
-        // 2. Mapeo (Convertimos el estado de UI a la Entidad de BD)
         val listaEjerciciosParaGuardar = formularios.map { form ->
             EjercicioRutina(
                 rutinaId = rutinaId,
                 nombreEjercicio = form.nombre,
-                series = form.series.toInt(), // Ya sabemos que es seguro
-                repeticiones = form.repeticiones.toInt(), // Ya sabemos que es seguro
-                peso = form.peso.toDoubleOrNull() // Opcional
+                series = form.series.toInt(),
+                repeticiones = form.repeticiones.toInt(),
+                peso = form.peso.toDoubleOrNull()
             )
         }
 
-        // 3. Guardado
         viewModelScope.launch {
             repository.insertListaEjercicios(listaEjerciciosParaGuardar)
-            _navegarALista.value = true // ¡Avisamos para navegar!
+            _navegarALista.value = true
         }
     }
 }

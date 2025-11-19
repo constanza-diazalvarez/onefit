@@ -20,6 +20,8 @@ import com.example.onefit.ui.pantallas.AgregarEjerciciosPantalla
 import com.example.onefit.ui.pantallas.CrearRutinaPantalla
 import com.example.onefit.ui.pantallas.ListarRutinasPantalla
 import com.example.onefit.ui.pantallas.RutinaDetallePantalla
+import com.example.onefit.ui.pantallas.RegistrarEntrenamientoPantalla
+
 import com.example.onefit.ui.theme.OneFitTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -78,6 +80,13 @@ class MainActivity : ComponentActivity() {
                             AgregarEjerciciosPantalla(
                                 navController = navController
                             )
+                        }
+
+                        composable(
+                            route = "registrar_entrenamiento/{rutinaId}",
+                            arguments = listOf(navArgument("rutinaId") { type = NavType.IntType })
+                        ) {
+                            RegistrarEntrenamientoPantalla(navController = navController)
                         }
                     }
                 }

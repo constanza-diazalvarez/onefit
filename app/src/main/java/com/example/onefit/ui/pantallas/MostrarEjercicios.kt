@@ -20,7 +20,6 @@ fun ListaEjercicios() {
     var cargando by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
 
-    // Lanzar la llamada una sola vez
     LaunchedEffect(Unit) {
         try {
             val respuesta = RetrofitHelper.api.obtenerEjercicios()
@@ -53,7 +52,6 @@ fun ListaEjercicios() {
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Row(Modifier.padding(12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        // imagen si existe
                         ejercicio.imageUrl?.let { url ->
                             Image(
                                 painter = rememberImagePainter(url),
@@ -65,7 +63,6 @@ fun ListaEjercicios() {
                         Column {
                             Text(text = ejercicio.name ?: "Sin nombre", style = MaterialTheme.typography.titleMedium)
                             Text(text = "ID: ${ejercicio.exerciseId}")
-                            // mostrar otros campos si quieres
                         }
                     }
                 }

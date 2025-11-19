@@ -84,7 +84,7 @@ object DatabaseModule {
             AppDatabase::class.java,
             "onefit_database"
         )
-            .addCallback(databaseCallback) // <-- Usamos el callback local
+            .addCallback(databaseCallback)
             .build()
     }*/
 
@@ -96,7 +96,6 @@ object DatabaseModule {
         database.registroEntrenamientoDao()
 
     /*
-     ¡ESTO ESTÁ PERFECTO ASÍ COMENTADO!
      Hilt usará el @Inject constructor de la clase RutinasRepository.
 
     @Provides
@@ -107,10 +106,6 @@ object DatabaseModule {
     ): RutinasRepository {
         return RutinasRepository(rutinaDao, registroDao)
     }*/
-
-
-    // 4. ¡ELIMINAMOS LA "RECETA 5" ('provideDatabaseCallback')!
-    // Ya no existe, así que borra esa función si la tienes.
 
     @Provides
     @Singleton
@@ -159,7 +154,6 @@ object DatabaseModule {
                     )
                 )
 
-                // --- 2. CREAMOS RUTINA "PUSH" ---
                 val idPecho = rutinaDao.insertRutina(
                     Rutina(
                         nombre = "Push",
@@ -194,7 +188,6 @@ object DatabaseModule {
                     )
                 )
 
-                // --- 3. CREAMOS RUTINA "PULL" ---
                 val idEspalda =
                     rutinaDao.insertRutina(Rutina(nombre = "Pull", descripcion = "Espalda-Biceps"))
                 rutinaDao.insertEjercicioRutina(

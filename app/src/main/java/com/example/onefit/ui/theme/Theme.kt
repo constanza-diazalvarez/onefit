@@ -53,9 +53,7 @@ fun OneFitTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            // Pintamos la barra de estado (donde va la hora) de Coral
             window.statusBarColor = colorScheme.primary.toArgb()
-            // Iconos blancos en la barra de estado
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !oscuro
         }
     }
