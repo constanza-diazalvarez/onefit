@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface RegistroEntrenamientoDao {
+    /*se utiliza suspend para operaciones puntuales (insert, update, delete)
+    * flow es para operaciones reactivas (en vivo)*/
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRegistroEntrenamiento(registro: RegistroEntrenamiento): Long

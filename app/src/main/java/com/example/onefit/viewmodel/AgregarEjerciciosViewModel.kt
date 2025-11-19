@@ -10,19 +10,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID // Para IDs únicos
+import java.util.UUID //para IDs únicos
 import javax.inject.Inject
 
 /**
  * Representa el estado de UN solo formulario de ejercicio en la lista.
  * Usamos un 'idLocal' para que Compose pueda identificar cada item.
  */
+/*para evitar trabajar con los datos sueltos de los input se manejan en un data class
+* despues con esto se genera la lista*/
 data class FormularioEjercicioEstado(
     val idLocal: UUID = UUID.randomUUID(),
     val nombre: String = "",
     val series: String = "4",
     val repeticiones: String = "10",
-    val peso: String = "", //opcional, por eso String
+    val peso: String = "", //es opcional por eso String
     val errorNombre: String? = null,
     val errorSeries: String? = null,
     val errorReps: String? = null
@@ -34,11 +36,13 @@ class AgregarEjerciciosViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val rutinaId: Int = checkNotNull(savedStateHandle.get("rutinaId"))
+    private val rutinaId: Int = checkNotNull(savedStateHandle.get("rutinaId"))//rescata el parametro de navegacion
+    //↑asi sabe a que rutina agregarle ejercicios
 
+    //↓este es mutable y se maneja en el vm. El vm es el unico que puede alterar su estado
     private val _listaFormularios = MutableStateFlow(listOf<FormularioEjercicioEstado>())
     val listaFormularios = _listaFormularios.asStateFlow()
-
+    //↑este es inmutable y por eso se manda por eso a la vista
     private val _navegarALista = MutableStateFlow(false)
     val navegarALista = _navegarALista.asStateFlow()
 

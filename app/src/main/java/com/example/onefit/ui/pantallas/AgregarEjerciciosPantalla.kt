@@ -30,17 +30,24 @@ fun AgregarEjerciciosPantalla(
     navController: NavController,
     viewModel: AgregarEjerciciosViewModel = hiltViewModel()
 ) {
+    /*conectan la vista con el estado del viewmodel
+    * cuando el estado cambia, la vista se actualiza*/
     val listaFormularios by viewModel.listaFormularios.collectAsState()
     val navegarALista by viewModel.navegarALista.collectAsState()
 
+    /*corrutina que permite ejecutar codigo cuando algo cambia
+    * es como el useEffect de react, se ejecuta solo cuando cambia su key
+    * las funciones composable se ejecutan muchas veces, por eso no se puede ocupar suspend*/
     LaunchedEffect(navegarALista) {
         if (navegarALista) {
             navController.navigate("lista_rutinas") {
                 popUpTo("lista_rutinas") { inclusive = true }
+                //↑como la rutina ya se guardo se eliminan las pantallas anteriores para evitar que el usuario se pueda de volver
             }
         }
     }
 
+    //↓estructura base de la pantalla
     Scaffold(
         topBar = {
             TopAppBar(
@@ -58,7 +65,6 @@ fun AgregarEjerciciosPantalla(
             )
         }
     ) { paddingValues ->
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -67,7 +73,11 @@ fun AgregarEjerciciosPantalla(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
+            /*recorre la listaFormularios que viene del viewmodel
+            * aqui se dibuja un formulario por cada item de la list*/
             items(listaFormularios, key = { it.idLocal }) { formulario ->
+                //↓rescata los valores del formulario cuando cambian desde el viewmodel
+                //it hace referencia al valor nuevo que se ingreso por el input ("sentadilla")
                 FormularioEjercicioItem(
                     estado = formulario,
                     onNombreChange = { viewModel.onNombreChange(formulario.idLocal, it) },
@@ -76,9 +86,11 @@ fun AgregarEjerciciosPantalla(
                     onPesoChange = { viewModel.onPesoChange(formulario.idLocal, it) },
                     onEliminar = { viewModel.eliminarEjercicio(formulario.idLocal) },
                     mostrarBotonEliminar = listaFormularios.size > 1
+                    //↑cuando hay mas de un ejercicio se puede borrar
                 )
             }
 
+            //boton de agregar otro ejercicio y guardar rutina que van debajo de la lista de ejercicios que se han ido agregando
             item {
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedButton(
@@ -103,7 +115,7 @@ fun AgregarEjerciciosPantalla(
 
 
 /**
- * Composable reutilizable que representa UN SOLO formulario
+ * composable reutilizable que representa UN SOLO formulario
  * de ejercicio en la lista dinámica.
  */
 @Composable

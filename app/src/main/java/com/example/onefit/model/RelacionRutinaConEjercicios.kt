@@ -8,8 +8,8 @@ data class RelacionRutinaConEjercicios(
     val rutina: Rutina,
 
     @Relation(
-        parentColumn = "id",
-        entityColumn = "rutinaId"
+        parentColumn = "id", //la columna del padre rutina
+        entityColumn = "rutinaId" //la columna del hijo ejercicioRutina
     )
     val ejercicios: List<EjercicioRutina>
 )

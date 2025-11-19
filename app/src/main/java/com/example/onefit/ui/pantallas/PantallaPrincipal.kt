@@ -74,7 +74,7 @@ fun PantallaPrincipal(
                 descripcion = "Revisa tu progreso",
                 icono = Icons.Default.DateRange,
                 onClick = {
-                    // TODO: Crear pantalla de historial
+                    navController.navigate("historial")
                 }
             )
         }

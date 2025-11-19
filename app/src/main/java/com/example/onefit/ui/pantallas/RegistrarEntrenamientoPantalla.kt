@@ -35,13 +35,13 @@ fun RegistrarEntrenamientoPantalla(
 ) {
     val ejercicios by viewModel.ejerciciosSesion.collectAsState()
     val nombreRutina by viewModel.nombreRutina.collectAsState()
-    val navegarAlInicio by viewModel.navegarAlHistorial.collectAsState()
+    val navegarAlHistorial by viewModel.navegarAlHistorial.collectAsState()
     val mostrarDialogo by viewModel.mostrarDialogoExito.collectAsState()
 
-    LaunchedEffect(navegarAlInicio) {
-        if (navegarAlInicio) {
-            navController.navigate("inicio") {
-                popUpTo("inicio") { inclusive = true }
+    LaunchedEffect(navegarAlHistorial) {
+        if (navegarAlHistorial) {
+            navController.navigate("historial") {
+                popUpTo("inicio") { inclusive = false }
             }
         }
     }

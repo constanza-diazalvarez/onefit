@@ -21,6 +21,8 @@ import com.example.onefit.ui.pantallas.CrearRutinaPantalla
 import com.example.onefit.ui.pantallas.ListarRutinasPantalla
 import com.example.onefit.ui.pantallas.RutinaDetallePantalla
 import com.example.onefit.ui.pantallas.RegistrarEntrenamientoPantalla
+import com.example.onefit.ui.pantallas.HistorialPantalla
+import com.example.onefit.ui.pantallas.DetalleHistorialPantalla
 
 import com.example.onefit.ui.theme.OneFitTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -87,6 +89,17 @@ class MainActivity : ComponentActivity() {
                             arguments = listOf(navArgument("rutinaId") { type = NavType.IntType })
                         ) {
                             RegistrarEntrenamientoPantalla(navController = navController)
+                        }
+
+                        composable("historial") {
+                            HistorialPantalla(navController = navController)
+                        }
+
+                        composable(
+                            route = "detalle_historial/{registroId}",
+                            arguments = listOf(navArgument("registroId") { type = NavType.IntType })
+                        ) {
+                            DetalleHistorialPantalla(navController = navController)
                         }
                     }
                 }

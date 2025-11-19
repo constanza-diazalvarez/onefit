@@ -130,6 +130,6 @@ class RegistrarEntrenamientoViewModel @Inject constructor(
 
     fun cerrarDialogoYNavegar() {
         _mostrarDialogoExito.value = false
-        _navegarAlInicio.value = true
+        _navegarAlHistorial.value = true
     }
 }
