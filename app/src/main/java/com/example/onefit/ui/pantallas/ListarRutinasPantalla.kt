@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -26,26 +27,24 @@ import com.example.onefit.model.Rutina
 import com.example.onefit.viewmodel.ListarRutinasViewModel
 import androidx.navigation.NavController
 
-/**
- * Pantalla principal que muestra la lista de rutinas.
- * Es una función @Composable.
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListarRutinasPantalla(
     navController: NavController,
     viewModel: ListarRutinasViewModel = hiltViewModel()
 ) {
-    // Observamos la variable 'todasLasRutinas' del ViewModel.
-    // 'observeAsState' convierte el LiveData en un "Estado" de Compose.
     val rutinasList by viewModel.todasLasRutinas.observeAsState(initial = emptyList())
 
-    // Scaffold es la estructura básica de Material Design
     Scaffold(
-        containerColor = Color.White,
         topBar = {
             TopAppBar(
                 title = { Text("Mis Rutinas") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary

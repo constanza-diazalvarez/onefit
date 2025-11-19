@@ -15,7 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 
 //pantallas
-import com.example.onefit.ui.pantallas.AgregarEjerciciosPantalla
+import com.example.onefit.ui.pantallas.PantallaPrincipal
 import com.example.onefit.ui.pantallas.AgregarEjerciciosPantalla
 import com.example.onefit.ui.pantallas.CrearRutinaPantalla
 import com.example.onefit.ui.pantallas.ListarRutinasPantalla
@@ -39,8 +39,12 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "crear_rutina" //pagina inicial
+                        startDestination = "inicio" //pagina inicial
                     ) {
+                        composable("inicio") {
+                            PantallaPrincipal(navController = navController)
+                        }
+
                         composable(route = "lista_rutinas") {
                             ListarRutinasPantalla(
                                 navController = navController
