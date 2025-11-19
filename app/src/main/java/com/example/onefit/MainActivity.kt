@@ -13,9 +13,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-// Importa tus pantallas
+
+//pantallas
+import com.example.onefit.ui.pantallas.AgregarEjerciciosPantalla
+import com.example.onefit.ui.pantallas.AgregarEjerciciosPantalla
 import com.example.onefit.ui.pantallas.CrearRutinaPantalla
 import com.example.onefit.ui.pantallas.ListarRutinasPantalla
+import com.example.onefit.ui.pantallas.RutinaDetallePantalla
 import com.example.onefit.ui.theme.OneFitTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,8 +53,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        //la pantalla que recibe el id de la rutina recién creada
-                        /*
                         composable(
                             route = "detalle_rutina/{rutinaId}",
                             arguments = listOf(navArgument("rutinaId") {
@@ -61,7 +63,18 @@ class MainActivity : ComponentActivity() {
                                 navController = navController
                                 // Hilt se encarga del ViewModel
                             )
-                        }*/
+                        }
+
+                        composable(
+                            route = "agregar_ejercicios/{rutinaId}",
+                            arguments = listOf(navArgument("rutinaId") {
+                                type = NavType.IntType
+                            })
+                        ) {
+                            AgregarEjerciciosPantalla(
+                                navController = navController
+                            )
+                        }
                     }
                 }
             }

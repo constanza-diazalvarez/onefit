@@ -41,12 +41,63 @@ object DatabaseModule {
             .build()
     }
 
+    /*
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext appContext: Context
+        // 1. YA NO PEDIMOS EL CALLBACK AQUÍ
+    ): AppDatabase {
+
+        // 2. DEFINIMOS EL CALLBACK AQUÍ ADENTRO
+        val databaseCallback = object : RoomDatabase.Callback() {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                CoroutineScope(Dispatchers.IO).launch {
+
+
+                    db.execSQL("INSERT INTO rutina (nombre_rutina, descripcion) VALUES('Pierna', 'Cuádriceps-Femorales-Gluteos')")
+                    db.execSQL("INSERT INTO rutina (nombre_rutina, descripcion) VALUES('Push', 'Pecho-Hombro-Triceps')")
+                    db.execSQL("INSERT INTO rutina (nombre_rutina, descripcion) VALUES('Pull', 'Espalda-Biceps')")
+
+
+                    // Ejercicios para Pierna (ID=1)
+                    db.execSQL("INSERT INTO ejercicio_rutina (rutinaId, nombreEjercicio, series, repeticiones) VALUES(1, 'Sentadilla', 4, 10)")
+                    db.execSQL("INSERT INTO ejercicio_rutina (rutinaId, nombreEjercicio, series, repeticiones) VALUES(1, 'Peso Muerto', 4, 10)")
+                    db.execSQL("INSERT INTO ejercicio_rutina (rutinaId, nombreEjercicio, series, repeticiones) VALUES(1, 'Búlgara', 4, 10)")
+
+                    // Ejercicios para Push (ID=2)
+                    db.execSQL("INSERT INTO ejercicio_rutina (rutinaId, nombreEjercicio, series, repeticiones) VALUES(2, 'Press Banca', 4, 10)")
+                    db.execSQL("INSERT INTO ejercicio_rutina (rutinaId, nombreEjercicio, series, repeticiones) VALUES(2, 'Press Banca Inclinado', 4, 10)")
+                    db.execSQL("INSERT INTO ejercicio_rutina (rutinaId, nombreEjercicio, series, repeticiones) VALUES(2, 'Press Militar', 3, 10)")
+
+                    // Ejercicios para Pull (ID=3)
+                    db.execSQL("INSERT INTO ejercicio_rutina (rutinaId, nombreEjercicio, series, repeticiones) VALUES(3, 'Remo con Barra', 4, 10)")
+                    db.execSQL("INSERT INTO ejercicio_rutina (rutinaId, nombreEjercicio, series, repeticiones) VALUES(3, 'Jalón al Pecho', 4, 10)")
+                    db.execSQL("INSERT INTO ejercicio_rutina (rutinaId, nombreEjercicio, series, repeticiones) VALUES(3, 'Curl de Biceps', 4, 10)")
+                }
+            }
+        }
+
+        return Room.databaseBuilder(
+            appContext,
+            AppDatabase::class.java,
+            "onefit_database"
+        )
+            .addCallback(databaseCallback) // <-- Usamos el callback local
+            .build()
+    }*/
+
     @Provides
     fun provideRutinaDao(database: AppDatabase): RutinaDao = database.rutinaDao()
 
     @Provides
     fun provideRegistroEntrenamientoDao(database: AppDatabase): RegistroEntrenamientoDao =
         database.registroEntrenamientoDao()
+
+    /*
+     ¡ESTO ESTÁ PERFECTO ASÍ COMENTADO!
+     Hilt usará el @Inject constructor de la clase RutinasRepository.
 
     @Provides
     @Singleton
@@ -55,7 +106,11 @@ object DatabaseModule {
         registroDao: RegistroEntrenamientoDao
     ): RutinasRepository {
         return RutinasRepository(rutinaDao, registroDao)
-    }
+    }*/
+
+
+    // 4. ¡ELIMINAMOS LA "RECETA 5" ('provideDatabaseCallback')!
+    // Ya no existe, así que borra esa función si la tienes.
 
     @Provides
     @Singleton
@@ -69,21 +124,108 @@ object DatabaseModule {
             applicationScope.launch {
                 val rutinaDao = daoProvider.get()
 
-                val idPierna = rutinaDao.insertRutina(Rutina(nombre = "Pierna", descripcion = "Cuádriceps-Femorales-Gluteos"))
-                rutinaDao.insertEjercicioRutina(EjercicioRutina(rutinaId = idPierna.toInt(), nombreEjercicio = "Sentadilla", series = 4, repeticiones = 10))
-                rutinaDao.insertEjercicioRutina(EjercicioRutina(rutinaId = idPierna.toInt(), nombreEjercicio = "Peso Muerto", series = 4, repeticiones = 10))
-                rutinaDao.insertEjercicioRutina(EjercicioRutina(rutinaId = idPierna.toInt(), nombreEjercicio = "Búlgara", series = 4, repeticiones = 10))
+                // --- 1. CREAMOS RUTINA "PIERNA" Y SUS EJERCICIOS ---
+                val idPierna = rutinaDao.insertRutina(
+                    Rutina(
+                        nombre = "Pierna",
+                        descripcion = "Cuádriceps-Femorales-Gluteos"
+                    )
+                )
+                rutinaDao.insertEjercicioRutina(
+                    EjercicioRutina(
+                        rutinaId = idPierna.toInt(),
+                        nombreEjercicio = "Sentadilla",
+                        series = 4,
+                        repeticiones = 10,
+                        peso = null
+                    )
+                )
+                rutinaDao.insertEjercicioRutina(
+                    EjercicioRutina(
+                        rutinaId = idPierna.toInt(),
+                        nombreEjercicio = "Peso Muerto",
+                        series = 4,
+                        repeticiones = 10,
+                        peso = null
+                    )
+                )
+                rutinaDao.insertEjercicioRutina(
+                    EjercicioRutina(
+                        rutinaId = idPierna.toInt(),
+                        nombreEjercicio = "Búlgara",
+                        series = 4,
+                        repeticiones = 10,
+                        peso = null
+                    )
+                )
 
-                val idPecho = rutinaDao.insertRutina(Rutina(nombre = "Push", descripcion = "Pecho-Hombro-Triceps"))
-                rutinaDao.insertEjercicioRutina(EjercicioRutina(rutinaId = idPecho.toInt(), nombreEjercicio = "Press Banca", series = 4, repeticiones = 10))
-                rutinaDao.insertEjercicioRutina(EjercicioRutina(rutinaId = idPecho.toInt(), nombreEjercicio = "Press Banca Inclinado", series = 4, repeticiones = 10))
-                rutinaDao.insertEjercicioRutina(EjercicioRutina(rutinaId = idPecho.toInt(), nombreEjercicio = "Press Militar", series = 3, repeticiones = 10))
+                // --- 2. CREAMOS RUTINA "PUSH" ---
+                val idPecho = rutinaDao.insertRutina(
+                    Rutina(
+                        nombre = "Push",
+                        descripcion = "Pecho-Hombro-Triceps"
+                    )
+                )
+                rutinaDao.insertEjercicioRutina(
+                    EjercicioRutina(
+                        rutinaId = idPecho.toInt(),
+                        nombreEjercicio = "Press Banca",
+                        series = 4,
+                        repeticiones = 10,
+                        peso = null
+                    )
+                )
+                rutinaDao.insertEjercicioRutina(
+                    EjercicioRutina(
+                        rutinaId = idPecho.toInt(),
+                        nombreEjercicio = "Press Banca Inclinado",
+                        series = 4,
+                        repeticiones = 10,
+                        peso = null
+                    )
+                )
+                rutinaDao.insertEjercicioRutina(
+                    EjercicioRutina(
+                        rutinaId = idPecho.toInt(),
+                        nombreEjercicio = "Press Militar",
+                        series = 3,
+                        repeticiones = 10,
+                        peso = null
+                    )
+                )
 
-                val idEspalda = rutinaDao.insertRutina(Rutina(nombre = "Pull", descripcion = "Espalda-Biceps"))
-                rutinaDao.insertEjercicioRutina(EjercicioRutina(rutinaId = idEspalda.toInt(), nombreEjercicio = "Remo con Barra", series = 4, repeticiones = 10))
-                rutinaDao.insertEjercicioRutina(EjercicioRutina(rutinaId = idEspalda.toInt(), nombreEjercicio = "Jalón al Pecho", series = 4, repeticiones = 10))
-                rutinaDao.insertEjercicioRutina(EjercicioRutina(rutinaId = idEspalda.toInt(), nombreEjercicio = "Curl de Biceps", series = 4, repeticiones = 10))
+                // --- 3. CREAMOS RUTINA "PULL" ---
+                val idEspalda =
+                    rutinaDao.insertRutina(Rutina(nombre = "Pull", descripcion = "Espalda-Biceps"))
+                rutinaDao.insertEjercicioRutina(
+                    EjercicioRutina(
+                        rutinaId = idEspalda.toInt(),
+                        nombreEjercicio = "Remo con Barra",
+                        series = 4,
+                        repeticiones = 10,
+                        peso = null
+                    )
+                )
+                rutinaDao.insertEjercicioRutina(
+                    EjercicioRutina(
+                        rutinaId = idEspalda.toInt(),
+                        nombreEjercicio = "Jalón al Pecho",
+                        series = 4,
+                        repeticiones = 10,
+                        peso = null
+                    )
+                )
+                rutinaDao.insertEjercicioRutina(
+                    EjercicioRutina(
+                        rutinaId = idEspalda.toInt(),
+                        nombreEjercicio = "Curl de Biceps",
+                        series = 4,
+                        repeticiones = 10,
+                        peso = null
+                    )
+                )
             }
         }
     }
+
 }

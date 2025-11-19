@@ -2,9 +2,7 @@ package com.example.onefit.ui.pantallas
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-// ¡CORRECCIÓN 1: IMPORTAMOS EL ICONO NORMAL!
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -24,7 +22,7 @@ fun CrearRutinaPantalla(
     navController: NavController,
     viewModel: CrearRutinaViewModel = hiltViewModel()
 ) {
-
+    //estados del ViewModel
     val nombre by viewModel.nombre.collectAsState()
     val descripcion by viewModel.descripcion.collectAsState()
     val errorNombre by viewModel.errorNombre.collectAsState() // Esto es String?
@@ -32,8 +30,8 @@ fun CrearRutinaPantalla(
 
     LaunchedEffect(navegarSiguiente) {
         navegarSiguiente?.let { nuevoId ->
-            navController.navigate("detalle_rutina/${nuevoId.toInt()}") {
-                popUpTo("lista_rutinas")
+            navController.navigate("agregar_ejercicios/${nuevoId.toInt()}") {
+                popUpTo("crear_rutina") { inclusive = true }
             }
             viewModel.onNavegacionCompletada()
         }
@@ -54,14 +52,8 @@ fun CrearRutinaPantalla(
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { viewModel.onSiguienteClick() }
-            ) {
-                Icon(Icons.Default.ArrowForward, contentDescription = "Siguiente")
-            }
         }
+
     ) { paddingValues ->
 
         Column(
@@ -77,7 +69,7 @@ fun CrearRutinaPantalla(
             OutlinedTextField(
                 value = nombre,
                 onValueChange = { viewModel.onNombreChange(it) },
-                label = { Text("Nombre de la Rutina *") },
+                label = { Text("Nombre Rutina") },
                 modifier = Modifier.fillMaxWidth(),
                 isError = errorActual != null,
                 singleLine = true,
@@ -114,7 +106,7 @@ fun CrearRutinaPantalla(
                     .fillMaxWidth()
                     .height(50.dp)
             ) {
-                Text("SIGUIENTE (AGREGAR EJERCICIOS)", fontSize = 16.sp)
+                Text("Agregar Ejercicios", fontSize = 16.sp)
             }
         }
     }

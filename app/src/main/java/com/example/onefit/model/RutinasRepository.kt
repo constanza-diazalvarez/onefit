@@ -29,6 +29,12 @@ class RutinasRepository @Inject constructor(
         rutinaDao.insertEjercicioRutina(ejercicio)
     }
 
+    suspend fun insertListaEjercicios(ejercicios: List<EjercicioRutina>) {
+        ejercicios.forEach { ejercicio ->
+            rutinaDao.insertEjercicioRutina(ejercicio)
+        }
+    }
+
     fun getAllRegistros(): Flow<List<RegistroEntrenamiento>> {
         return registroEntrenamientoDao.getHistorialEntrenamientos()
     }

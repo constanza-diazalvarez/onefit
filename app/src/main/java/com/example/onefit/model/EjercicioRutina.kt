@@ -32,5 +32,8 @@ data class EjercicioRutina(
     val series: Int,
 
     @ColumnInfo(name = "repeticiones")
-    val repeticiones: Int
+    val repeticiones: Int,
+
+    @ColumnInfo(name = "peso")
+    val peso: Double? = null
 )
