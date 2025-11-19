@@ -1,5 +1,8 @@
 package com.example.onefit.ui.pantallas
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,6 +10,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,11 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.onefit.viewmodel.EstadoSerieInput
 import com.example.onefit.viewmodel.RegistrarEntrenamientoViewModel
-
+import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrarEntrenamientoPantalla(
@@ -29,12 +35,26 @@ fun RegistrarEntrenamientoPantalla(
 ) {
     val ejercicios by viewModel.ejerciciosSesion.collectAsState()
     val nombreRutina by viewModel.nombreRutina.collectAsState()
-    val navegarAlHistorial by viewModel.navegarAlHistorial.collectAsState()
+    val navegarAlInicio by viewModel.navegarAlHistorial.collectAsState()
+    val mostrarDialogo by viewModel.mostrarDialogoExito.collectAsState()
 
-    LaunchedEffect(navegarAlHistorial) {
-        if (navegarAlHistorial) {
-            navController.popBackStack("lista_rutinas", inclusive = false)
+    LaunchedEffect(navegarAlInicio) {
+        if (navegarAlInicio) {
+            navController.navigate("inicio") {
+                popUpTo("inicio") { inclusive = true }
+            }
         }
+    }
+
+    LaunchedEffect(mostrarDialogo) {
+        if (mostrarDialogo) {
+            delay(2000)
+            viewModel.cerrarDialogoYNavegar()
+        }
+    }
+
+    if (mostrarDialogo) {
+        DialogoExitoAnimado()
     }
 
     Scaffold(
@@ -79,6 +99,58 @@ fun RegistrarEntrenamientoPantalla(
                     onSerieChange = { indexSerie, reps, peso, check ->
                         viewModel.onSerieUpdate(indexEjercicio, indexSerie, reps, peso, check)
                     }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun DialogoExitoAnimado() {
+    Dialog(onDismissRequest = { /* No hacer nada, espera el timer */ }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                var visible by remember { mutableStateOf(false) }
+                LaunchedEffect(Unit) { visible = true }
+
+                AnimatedVisibility(
+                    visible = visible,
+                    enter = scaleIn(
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = "Éxito",
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(80.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "¡Entrenamiento Guardado!",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Text(
+                    text = "Buen trabajo hoy.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

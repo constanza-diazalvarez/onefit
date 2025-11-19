@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.onefit.model.RegistroEntrenamiento
 import com.example.onefit.model.RegistroSerieEntrenamiento
 import com.example.onefit.model.RutinasRepository
+import com.example.onefit.utils.Vibrador
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,7 +29,8 @@ data class EstadoSerieInput(
 @HiltViewModel
 class RegistrarEntrenamientoViewModel @Inject constructor(
     private val repository: RutinasRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val vibrador: Vibrador
 ) : ViewModel() {
 
     private val rutinaId: Int = checkNotNull(savedStateHandle.get("rutinaId"))
@@ -41,6 +43,12 @@ class RegistrarEntrenamientoViewModel @Inject constructor(
 
     private val _navegarAlHistorial = MutableStateFlow(false)
     val navegarAlHistorial = _navegarAlHistorial.asStateFlow()
+
+    private val _mostrarDialogoExito = MutableStateFlow(false)
+    val mostrarDialogoExito = _mostrarDialogoExito.asStateFlow()
+
+    private val _navegarAlInicio = MutableStateFlow(false)
+    val navegarAlInicio = _navegarAlInicio.asStateFlow()
 
     init {
         cargarRutinaParaEntrenar()
@@ -113,8 +121,15 @@ class RegistrarEntrenamientoViewModel @Inject constructor(
             }
 
             repository.insertRegistroCompleto(nuevoRegistro, seriesParaGuardar)
+            vibrador.vibrar(500)
 
-            _navegarAlHistorial.value = true
+            _mostrarDialogoExito.value = true
+            //_navegarAlHistorial.value = true
         }
+    }
+
+    fun cerrarDialogoYNavegar() {
+        _mostrarDialogoExito.value = false
+        _navegarAlInicio.value = true
     }
 }
