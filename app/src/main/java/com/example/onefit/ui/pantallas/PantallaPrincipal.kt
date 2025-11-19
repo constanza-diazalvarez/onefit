@@ -101,7 +101,6 @@ fun TarjetaMenu(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Icono grande a la izquierda
             Icon(
                 imageVector = icono,
                 contentDescription = null,
@@ -111,7 +110,6 @@ fun TarjetaMenu(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Textos
             Column {
                 Text(
                     text = titulo,

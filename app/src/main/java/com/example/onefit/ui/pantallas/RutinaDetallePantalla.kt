@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.PlayArrow // <-- Icono de Play
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -44,22 +44,20 @@ fun RutinaDetallePantalla(
                 )
             )
         },
-        // --- ¡AQUÍ ESTÁ EL ARREGLO! ---
-        // Quitamos el botón redondo (+) y ponemos uno Extendido (Grande)
+
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
                     rutinaDetalle?.let {
-                        // Navegamos a la pantalla de Registrar Entrenamiento
                         navController.navigate("registrar_entrenamiento/${it.rutina.id}")
                     }
                 },
-                containerColor = MaterialTheme.colorScheme.tertiary, // Color Verde (si está definido) o secundario
+                containerColor = MaterialTheme.colorScheme.tertiary,
                 contentColor = MaterialTheme.colorScheme.onTertiary
             ) {
                 Icon(Icons.Default.PlayArrow, "Comenzar")
                 Spacer(Modifier.width(8.dp))
-                Text("COMENZAR ENTRENAMIENTO")
+                Text("Comenza Entrenamiento")
             }
         }
     ) { paddingValues ->
@@ -105,12 +103,11 @@ fun RutinaDetallePantalla(
                         EjercicioItemDetalle(
                             nombre = ejercicio.nombreEjercicio,
                             series = ejercicio.series,
-                            reps = ejercicio.repeticiones // Asegúrate que sea 'repeticiones'
+                            reps = ejercicio.repeticiones
                         )
                     }
                 }
 
-                // Espacio extra al final para que el botón flotante no tape el último ejercicio
                 item {
                     Spacer(modifier = Modifier.height(80.dp))
                 }

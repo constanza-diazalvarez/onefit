@@ -43,12 +43,9 @@ fun ListarRutinasPantalla(
                 )
             )
         },
-        // --- ¡AQUÍ ESTÁ EL ARREGLO! ---
-        // Usamos ExtendedFloatingActionButton para tener TEXTO + ICONO
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
-                    // Navega a la pantalla de creación
                     navController.navigate("crear_rutina")
                 },
                 containerColor = MaterialTheme.colorScheme.secondary,
@@ -56,7 +53,7 @@ fun ListarRutinasPantalla(
             ) {
                 Icon(Icons.Default.Add, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("CREAR NUEVA RUTINA") // <-- ¡TEXTO VISIBLE!
+                Text("Crear Nueva Rutina")
             }
         }
     ) { paddingValues ->
@@ -84,7 +81,6 @@ fun ListarRutinasPantalla(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(rutinasList) { rutina ->
-                    // Usamos la versión CARD para que el click funcione bien
                     RutinaItemCard(
                         rutina = rutina,
                         onClick = {
@@ -92,7 +88,6 @@ fun ListarRutinasPantalla(
                         }
                     )
                 }
-                // Espacio extra al final
                 item { Spacer(modifier = Modifier.height(80.dp)) }
             }
         }
@@ -109,7 +104,7 @@ fun RutinaItemCard(
     onClick: () -> Unit
 ) {
     Card(
-        onClick = onClick, // El onClick nativo de Material3 funciona perfecto
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),

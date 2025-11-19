@@ -300,10 +300,7 @@ object DatabaseModule {
                 registroDao.insertSerie(RegistroSerieEntrenamiento(registroSerieEntrenamientoId = idLogPush2.toInt(), nombreEjercicio = "Press Militar", numeroSerie = 1, repeticiones = 8, peso = 20.0))
                 registroDao.insertSerie(RegistroSerieEntrenamiento(registroSerieEntrenamientoId = idLogPush2.toInt(), nombreEjercicio = "Press Militar", numeroSerie = 2, repeticiones = 8, peso = 20.0))
                 registroDao.insertSerie(RegistroSerieEntrenamiento(registroSerieEntrenamientoId = idLogPush2.toInt(), nombreEjercicio = "Press Militar", numeroSerie = 3, repeticiones = 8, peso = 20.0))
-
-
             }
         }
     }
-
 }

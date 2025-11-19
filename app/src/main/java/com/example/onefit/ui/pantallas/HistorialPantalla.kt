@@ -41,7 +41,6 @@ fun HistorialPantalla(
     val mesSeleccionado by viewModel.mesSeleccionado.collectAsState()
     val entrenamientosMap by viewModel.entrenamientosPorFecha.collectAsState()
 
-    // --- NUEVO: Observamos estadísticas ---
     val estadisticas by viewModel.estadisticas.collectAsState()
 
     Scaffold(
@@ -71,7 +70,6 @@ fun HistorialPantalla(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // --- CONTROL DE MES ---
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -94,7 +92,6 @@ fun HistorialPantalla(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // --- CALENDARIO ---
             CalendarioGrid(
                 year = mesSeleccionado.year,
                 month = mesSeleccionado.monthValue,
@@ -106,7 +103,6 @@ fun HistorialPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // --- NUEVO: SECCIÓN DE RESUMEN MENSUAL ---
             Text(
                 text = "Resumen del Mes",
                 style = MaterialTheme.typography.titleMedium,
